@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TPW Industries - Modern Navbar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #eff1f0;
+        }
+
+        /* Navbar Styling */
+        .navbar-custom {
+            background-color: #eff1f0;
+            padding: 0.75rem 2rem;
+            border-bottom: 1px solid #d1d5db;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* Logo */
+        .navbar-logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #14f100 0%, #0fb800 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            min-width: fit-content;
+        }
+
+        /* Navbar Container */
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        /* Nav Items Container - Centered */
+        .nav-items-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2.5rem;
+            flex: 1;
+        }
+
+        .nav-items-container a,
+        .nav-items-container button {
+            color: #1f42837;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            outline: none;
+        }
+
+        .nav-items-container a:active,
+        .nav-items-container button:active {
+            color: #1f42837;
+        }
+
+        .nav-items-container a::after,
+        .nav-items-container button::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #14f100, #0fb800);
+            transition: width 0.3s ease;
+        }
+
+        .nav-items-container a:hover::after,
+        .nav-items-container button:hover::after {
+            width: 100%;
+        }
+
+        .nav-items-container a:hover,
+        .nav-items-container button:hover {
+            color: #14f100;
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 16px;
+            border: 2px solid #14f100;
+            border-radius: 25px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            outline: none;
+            background-color: white;
+            color: #1f42837;
+            transition: all 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(20, 241, 0, 0.1);
+            border-color: #0fb800;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            display: none;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 10px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #1f42837;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 14px;
+        }
+
+        .search-result-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #14f100;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+
+        /* Dropdown Styling */
+        .dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-menu-custom {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            min-width: 180px;
+            margin-top: 0.5rem;
+            display: none;
+            z-index: 1002;
+            animation: slideDown 0.2s ease;
+        }
+
+        .dropdown-menu-custom.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-item-custom {
+            padding: 12px 16px;
+            color: #1f42837;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown-item-custom:hover {
+            background-color: #f9f9f9;
+            color: #14f100;
+            padding-left: 20px;
+        }
+
+        .dropdown-item-custom:first-child {
+            border-radius: 7px 7px 0 0;
+        }
+
+        .dropdown-item-custom:last-child {
+            border-radius: 0 0 7px 7px;
+        }
+
+        /* Nested Dropdown */
+        .nested-dropdown {
+            position: relative;
+        }
+
+        .nested-dropdown-menu {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            min-width: 200px;
+            margin-left: 0.5rem;
+            display: none;
+            z-index: 1003;
+            animation: slideDown 0.2s ease;
+        }
+
+        .nested-dropdown-menu.active {
+            display: block;
+        }
+
+        .nested-dropdown-item {
+            padding: 12px 16px;
+            color: #1f42837;
+            text-decoration: none;
+            display: block;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .nested-dropdown-item:hover {
+            background-color: #f9f9f9;
+            color: #14f100;
+            padding-left: 20px;
+        }
+
+        .nested-dropdown-item:first-child {
+            border-radius: 7px 7px 0 0;
+        }
+
+        .nested-dropdown-item:last-child {
+            border-radius: 0 0 7px 7px;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-bottom: 1px solid #d1d5db;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 0.5rem;
+            border-radius: 0 0 12px 12px;
+            z-index: 1002;
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-menu a,
+        .mobile-menu button {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            color: #1f42837;
+            text-decoration: none;
+            text-align: left;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .mobile-menu a:active,
+        .mobile-menu button:active {
+            color: #1f42837;
+        }
+
+        .mobile-menu a:hover,
+        .mobile-menu button:hover {
+            background-color: #f9f9f9;
+            color: #14f100;
+            padding-left: 24px;
+        }
+
+        .mobile-dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mobile-dropdown-header i {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-dropdown-header i.rotate {
+            transform: rotate(180deg);
+        }
+
+        .mobile-submenu {
+            background-color: #f9f9f9;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .mobile-submenu.active {
+            max-height: 500px;
+        }
+
+        .mobile-submenu a {
+            padding: 10px 20px 10px 40px;
+            font-size: 14px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .mobile-submenu a:hover {
+            padding-left: 44px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar-custom {
+                padding: 0.75rem 1rem;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-items-container {
+                display: none;
+            }
+
+            .search-container {
+                min-width: 0;
+                flex: 1;
+                max-width: 200px;
+            }
+
+            .navbar-container {
+                gap: 1rem;
+            }
+
+            .navbar-logo {
+                font-size: 24px;
+            }
+
+            .search-input {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+
+            .mobile-menu {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                border-radius: 0;
+                max-height: calc(100vh - 60px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-custom {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .navbar-logo {
+                font-size: 20px;
+            }
+
+            .search-container {
+                max-width: 150px;
+            }
+
+            .search-input {
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar-custom">
+        <div class="navbar-container">
+            <!-- Logo -->
+            <div class="navbar-logo">TPW</div>
+
+            <!-- Desktop Navigation Items -->
+            <div class="nav-items-container">
+                <a href="#home">HOME</a>
+                <a href="#products">PRODUCTS</a>
+
+                <!-- Solution Dropdown -->
+                <div class="dropdown-wrapper">
+                    <button class="dropdown-btn">
+                        SOLUTION <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i>
+                    </button>
+                    <div class="dropdown-menu-custom">
+                        <a href="#solution" class="dropdown-item-custom">Solution</a>
+                        <div class="nested-dropdown">
+                            <button class="dropdown-item-custom">
+                                System Architecture
+                                <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
+                            </button>
+                            <div class="nested-dropdown-menu">
+                                <a href="#saksham" class="nested-dropdown-item">Saksham Architecture</a>
+                                <a href="#siemens" class="nested-dropdown-item">Siemens</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#industries">INDUSTRIES</a>
+                <a href="#booklet">BOOKLET</a>
+
+                <!-- Help Dropdown -->
+                <div class="dropdown-wrapper">
+                    <button class="dropdown-btn">
+                        HELP <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i>
+                    </button>
+                    <div class="dropdown-menu-custom">
+                        <a href="#documentation" class="dropdown-item-custom">Documentation</a>
+                        <a href="#support" class="dropdown-item-custom">Support</a>
+                    </div>
+                </div>
+
+                <a href="#about">ABOUT</a>
+                <a href="#faqs">FAQS</a>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Search products..."
+                >
+                <div class="search-results" id="searchResults"></div>
+            </div>
+
+            <!-- Hamburger Menu -->
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#home">HOME</a>
+            <a href="#products">PRODUCTS</a>
+
+            <!-- Mobile Solution Dropdown -->
+            <button class="mobile-dropdown-toggle">
+                <div class="mobile-dropdown-header">
+                    SOLUTION
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </button>
+            <div class="mobile-submenu">
+                <a href="#solution">Solution</a>
+                <button class="mobile-submenu-toggle">
+                    <div class="mobile-dropdown-header">
+                        System Architecture
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </button>
+                <div class="mobile-submenu mobile-nested-submenu">
+                    <a href="#saksham">Saksham Architecture</a>
+                    <a href="#siemens">Siemens</a>
+                </div>
+            </div>
+
+            <a href="#industries">INDUSTRIES</a>
+            <a href="#booklet">BOOKLET</a>
+
+            <!-- Mobile Help Dropdown -->
+            <button class="mobile-dropdown-toggle">
+                <div class="mobile-dropdown-header">
+                    HELP
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </button>
+            <div class="mobile-submenu">
+                <a href="#documentation">Documentation</a>
+                <a href="#support">Support</a>
+            </div>
+
+            <a href="#about">ABOUT</a>
+            <a href="#faqs">FAQS</a>
+        </div>
+    </nav>
+
+    <!-- Product Database -->
+    <script>
+        const products = [
+            { name: "SAKSHAM PLC Series", category: "PLC" },
+            { name: "SAKSHAM HMI Panels", category: "HMI" },
+            { name: "SAKSHAM I/O Modules", category: "IO" },
+            { name: "SAKSHAM Communication Gateway", category: "Network" },
+            { name: "SAKSHAM Safety Module", category: "Safety" },
+            { name: "Siemens S7-1200", category: "PLC" },
+            { name: "Siemens S7-1500", category: "PLC" },
+            { name: "Siemens KTP Panel", category: "HMI" },
+            { name: "Industrial Automation Suite", category: "Software" },
+            { name: "Real-time Control Engine", category: "Software" },
+            { name: "Distributed I/O System", category: "IO" },
+            { name: "Advanced Networking Module", category: "Network" }
+        ];
+
+        // Hamburger Toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('.mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            });
+        });
+
+        // Desktop Dropdown Toggle
+        document.querySelectorAll('.dropdown-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const dropdown = this.nextElementSibling;
+                
+                // Close other dropdowns
+                document.querySelectorAll('.dropdown-menu-custom.active').forEach(d => {
+                    if (d !== dropdown) d.classList.remove('active');
+                });
+                
+                dropdown.classList.toggle('active');
+            });
+        });
+
+        // Nested Dropdown Toggle
+        document.querySelectorAll('.nested-dropdown > button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const nestedMenu = this.nextElementSibling;
+                nestedMenu.classList.toggle('active');
+            });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-wrapper') && !e.target.closest('.search-container')) {
+                document.querySelectorAll('.dropdown-menu-custom.active').forEach(d => {
+                    d.classList.remove('active');
+                });
+                document.querySelectorAll('.nested-dropdown-menu.active').forEach(d => {
+                    d.classList.remove('active');
+                });
+            }
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+
+            if (query.length === 0) {
+                searchResults.classList.remove('active');
+                return;
+            }
+
+            const filtered = products.filter(product =>
+                product.name.toLowerCase().includes(query) ||
+                product.category.toLowerCase().includes(query)
+            );
+
+            if (filtered.length > 0) {
+                searchResults.innerHTML = filtered.map(product =>
+                    `<div class="search-result-item">${product.name}</div>`
+                ).join('');
+                searchResults.classList.add('active');
+            } else {
+                searchResults.innerHTML = '<div class="search-result-item">No products found</div>';
+                searchResults.classList.add('active');
+            }
+        });
+
+        // Close search results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                searchResults.classList.remove('active');
+            }
+        });
+
+        // Mobile Dropdown Toggle
+        document.querySelectorAll('.mobile-dropdown-toggle').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const submenu = this.nextElementSibling;
+                submenu.classList.toggle('active');
+                this.querySelector('i').classList.toggle('rotate');
+            });
+        });
+
+        // Mobile Nested Dropdown Toggle
+        document.querySelectorAll('.mobile-submenu-toggle').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const nestedSubmenu = this.nextElementSibling;
+                nestedSubmenu.classList.toggle('active');
+                this.querySelector('i').classList.toggle('rotate');
+            });
+        });
+    </script>
+</body>
+</html>
